@@ -8,6 +8,18 @@ const jwt = require("jsonwebtoken");
 async function registerUser(req, res) {
     const { username, email, password } = req.body;
 
+    /* mn ny yahan aik variable banaya hai isUserAlreadyExist ky name sy, ye check kry ga db mn ky jo user email enter
+    krky register krny ki kosish kr raha hai, wo email pehly sy db mn hai to nahi, agr pehly sy hai db mn, 
+    to user already exist ka message aa jy ga, or user add nahi ho ga */
+    const isUserAlreadtExist = await userModel.findOne({
+        email
+    })
+    if(isUserAlreadtExist){
+        return res.status(409).json({
+            message: "User Already Exist"
+        })
+    }
+
     const user = await userModel.create({ username, email, password });
 
     /*jwt.sign humy token create kr ky deti hai, lakin token create krny ky liye isy 2 cheezen chaiyen
